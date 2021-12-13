@@ -1,0 +1,62 @@
+version: '3.1'
+
+services:
+  zoo1:
+    container_name: zoo1
+    image: zookeeper:latest
+    restart: always
+    hostname: zoo1
+    ports:
+      - 2181:2181
+    environment:
+      ZOO_MY_ID: 1
+      ZOO_SERVERS: server.1=zoo1:2888:3888;2181 server.2=zoo2:2888:3888;2181 server.3=zoo3:2888:3888;2181
+
+  zoo2:
+    container_name: zoo2
+    image: zookeeper:latest
+    restart: always
+    hostname: zoo2
+    ports:
+      - 2182:2181
+    environment:
+      ZOO_MY_ID: 2
+      ZOO_SERVERS: server.1=zoo1:2888:3888;2181 server.2=zoo2:2888:3888;2181 server.3=zoo3:2888:3888;2181
+
+  zoo3:
+    container_name: zoo3
+    image: zookeeper:latest
+    restart: always
+    hostname: zoo3
+    ports:
+      - 2183:2181
+    environment:
+      ZOO_MY_ID: 3
+      ZOO_SERVERS: server.1=zoo1:2888:3888;2181 server.2=zoo2:2888:3888;2181 server.3=zoo3:2888:3888;2181
+
+  app1:
+    container_name: app1
+    restart: always
+    env_file: .env
+    image: zk:latest
+
+  app2:
+    container_name: app2
+    restart: always
+    env_file: .env
+    image: zk:latest
+
+  app3:
+    container_name: app3
+    restart: always
+    env_file: .env
+    image: zk:latest
+
+  ui:
+    container_name: ui
+    image: elkozmon/zoonavigator:latest
+    restart: unless-stopped
+    environment:
+      HTTP_PORT: 9000
+    ports:
+    - 9000:9000
